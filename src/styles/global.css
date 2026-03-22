@@ -307,7 +307,7 @@
 }
 
 /* Smooth transitions for themed elements */
-.card, .badge, .pill, .terminal, .menubar-top, .menubar-widget,
+.badge, .pill, .terminal, .menubar-top, .menubar-widget,
 .star-count, .footer, .install-btn {
   transition: background-color .6s ease, color .5s ease, border-color .5s ease;
 }
