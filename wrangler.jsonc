@@ -1,0 +1,22 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "app",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-03-22",
+  "routes": [
+    { "pattern": "app.snaix.homes/*", "zone_name": "snaix.homes" }
+  ],
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "analytics_engine_datasets": [
+    { "binding": "ANALYTICS", "dataset": "app_analytics" }
+  ]
+}

@@ -1,0 +1,31 @@
+---
+import type { Project } from '../data/projects';
+import Star from './icons/Star.astro';
+
+interface Props {
+  project: Project;
+  id?: string;
+}
+
+const { project: p, id } = Astro.props;
+---
+
+<a href={`/${p.slug}/`} class="card" id={id} data-tags={p.tags.join(",")}>
+  <div class="h-[180px] relative overflow-hidden border-b border-border flex items-center justify-center">
+    <slot />
+  </div>
+  <div class="p-5 flex-1 flex flex-col">
+    <h2 class="font-bold text-lg tracking-tight mb-1">{p.name}</h2>
+    <p class="text-sm text-fg2 leading-relaxed flex-1">{p.desc}</p>
+    <div class="flex items-center gap-1.5 mt-3 flex-wrap">
+      {p.tags.map((t: string) => <span class="pill">{t}</span>)}
+      {p.installCmd && (
+        <span class="install-btn" data-cmd={p.installCmd}>{p.installLabel}</span>
+      )}
+      <span class="star-count" data-repo={p.repo}>
+        <Star class="w-3 h-3" />
+        <span>…</span>
+      </span>
+    </div>
+  </div>
+</a>

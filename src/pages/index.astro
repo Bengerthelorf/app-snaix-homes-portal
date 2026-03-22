@@ -1,0 +1,253 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Aurora from '../components/Aurora.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import GitHubIcon from '../components/icons/GitHub.astro';
+import projects, { allTags, GITHUB_USER, THEME } from '../data/projects';
+import '../styles/global.css';
+
+const THEME_DARK = THEME.dark;
+const THEME_LIGHT = THEME.light;
+---
+
+<Layout title="Bengerthelorf — Open Source">
+
+<Aurora />
+<button class="theme-dot" id="theme-btn" role="switch" aria-label="Toggle theme" aria-checked="false"></button>
+
+<!-- Dot grid background -->
+<div class="fixed inset-0 pointer-events-none z-0 opacity-40"
+  style="background-image:radial-gradient(circle,var(--color-border) 1px,transparent 1px);background-size:40px 40px"></div>
+
+<div class="relative z-1 max-w-[1100px] mx-auto px-6 pt-12 pb-16 animate-fade-up">
+
+  <!-- Hero -->
+  <header class="flex items-start gap-5 mb-6">
+    <img class="w-20 h-20 rounded-full border-2 border-border shrink-0"
+      src={`https://github.com/${GITHUB_USER}.png`} alt="Bengerthelorf" width="80" height="80" />
+    <div>
+      <h1 class="hero-heading">Bengerthelorf</h1>
+      <p class="text-fg2 text-[.95rem] mt-2 leading-relaxed max-w-[480px]">
+        I build <em class="font-serif italic text-fg">tools that get out of your way</em> — native macOS apps, terminal interfaces, and CLI utilities. Everything open source, mostly Rust and Swift.
+      </p>
+      <div class="flex gap-1.5 mt-3 flex-wrap">
+        {allTags.map(tag => (
+          <button class="badge" data-filter={tag} aria-pressed="false">{tag}</button>
+        ))}
+      </div>
+      <div class="flex gap-2 mt-3">
+        <a href={`https://github.com/${GITHUB_USER}`}
+          class="inline-flex items-center gap-1.5 text-[.78rem] font-medium text-fg2 no-underline px-3 py-1.5 rounded-md border border-border hover:text-accent hover:border-border-hover hover:bg-accent-dim transition-colors">
+          <GitHubIcon class="w-3.5 h-3.5" />
+          GitHub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="flex gap-8 py-4 mb-8 border-t border-b border-border animate-fade-up" style="--delay:.15s">
+    <div class="flex flex-col gap-0.5"><span class="stat-num" id="total-stars">—</span><span class="stat-label">Total Stars</span></div>
+    <div class="flex flex-col gap-0.5"><span class="stat-num" id="total-commits">—</span><span class="stat-label">Commits</span></div>
+    <div class="flex flex-col gap-0.5"><span class="stat-num" id="total-repos">—</span><span class="stat-label">Projects</span></div>
+  </div>
+
+  <!-- Projects -->
+  <div class="section-label">// projects</div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-up" id="projects-grid" style="--delay:.25s">
+
+    {projects.map(p => {
+      if (p.preview === "icons") return (
+        <ProjectCard project={p}>
+          <div class="icon-grid">
+            <div class="app-icon">🎵</div><div class="app-icon">📸</div>
+            <div class="app-icon">🗓️</div><div class="app-icon">⚙️</div>
+            <div class="app-icon">🎮</div><div class="app-icon">✉️</div>
+            <div class="app-icon">🧭</div><div class="app-icon">🎨</div>
+          </div>
+        </ProjectCard>
+      );
+      if (p.preview === "terminal-cli") return (
+        <ProjectCard project={p} id="bcmr-card">
+          <div class="terminal">
+            <div class="terminal-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="title">{p.slug}</span></div>
+            <div class="p-2 flex-1 overflow-hidden">
+              <div class="cli-line"><span class="cli-prompt">$</span><span class="cli-cmd">bcmr cp</span><span class="cli-arg">dataset.tar.gz server:/data/</span></div>
+              <div class="cli-output">Copying to server via SSH...</div>
+              <div class="cli-progress-wrap"><div class="cli-progress-bar" id="bcmr-bar"></div></div>
+              <div class="cli-output cli-stats" id="bcmr-stats">78% · 142 MB/s · ETA 0:02</div>
+              <div class="cli-line mt-1.5"><span class="cli-prompt">$</span><span class="cli-cmd">bcmr mv</span><span class="cli-arg">*.log /archive/ --verify</span></div>
+              <div class="cli-output cli-ok">✓ 12 files moved & verified</div>
+            </div>
+          </div>
+        </ProjectCard>
+      );
+      if (p.preview === "terminal-tui") return (
+        <ProjectCard project={p} id="ppt-card">
+          <div class="terminal">
+            <div class="terminal-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="title">{p.slug}</span></div>
+            <div class="p-2 flex-1 overflow-hidden">
+              <div class="tui-table" id="ppt-body"></div>
+            </div>
+          </div>
+        </ProjectCard>
+      );
+      if (p.preview === "menubar") return (
+        <ProjectCard project={p} id="caudit-card">
+          <div class="menubar">
+            <div class="menubar-top">
+              <span>📊</span><span>Today:</span>
+              <span class="cost" id="caudit-cost">$2.47</span>
+              <span>│ 1.2M tokens</span>
+            </div>
+            <div class="menubar-widget">
+              <div class="row"><span class="label">Opus 4</span><span class="val">$1.83</span></div>
+              <div class="row"><span class="label">Sonnet 4</span><span class="val">$0.64</span></div>
+              <div class="row"><span class="label">5h Quota</span><span class="val green">42%</span></div>
+              <div class="mini-chart" id="caudit-chart">
+                {[6,12,8,16,20,14,18,24,20,10,16,22].map(h => <i style={`--h:${h}px`}></i>)}
+              </div>
+            </div>
+          </div>
+        </ProjectCard>
+      );
+    })}
+
+  </div>
+
+  <footer class="footer mt-12 pt-6 border-t border-border flex justify-between items-center text-xs text-fg3 animate-fade-up" style="--delay:.4s">
+    <span>Built with Cloudflare Workers</span>
+    <a href={`https://github.com/${GITHUB_USER}`}>@bengerthelorf</a>
+  </footer>
+
+</div>
+
+<script define:vars={{ THEME_DARK, THEME_LIGHT }}>
+  // Theme toggle
+  const themeBtn = document.getElementById('theme-btn');
+  themeBtn.addEventListener('click', () => {
+    const l = document.documentElement.classList.toggle('light');
+    localStorage.setItem('theme', l ? 'light' : 'dark');
+    themeBtn.setAttribute('aria-checked', String(l));
+    const m = document.querySelector('meta[name="theme-color"]:not([media])');
+    if (m) m.setAttribute('content', l ? THEME_LIGHT : THEME_DARK);
+  });
+
+  // GitHub Stats
+  fetch('/api/stats')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(stats => {
+      document.querySelectorAll('.star-count[data-repo]').forEach(el => {
+        const count = stats.repos?.[el.dataset.repo];
+        if (count != null) el.querySelector('span').textContent = count.toLocaleString();
+      });
+      if (stats.totalStars) document.getElementById('total-stars').textContent = stats.totalStars.toLocaleString();
+      if (stats.totalCommits) document.getElementById('total-commits').textContent = stats.totalCommits.toLocaleString();
+      if (stats.totalRepos) document.getElementById('total-repos').textContent = stats.totalRepos.toString();
+    })
+    .catch(err => console.error('Stats fetch failed:', err));
+
+  // Badge filter with aria-pressed
+  let activeFilter = null;
+  const allBadges = document.querySelectorAll('.badge[data-filter]');
+  const allCards = document.querySelectorAll('.card[data-tags]');
+  allBadges.forEach(badge => {
+    badge.addEventListener('click', () => {
+      const tag = badge.dataset.filter;
+      if (activeFilter === tag) {
+        activeFilter = null;
+        allBadges.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+        allCards.forEach(c => c.classList.remove('hidden'));
+      } else {
+        activeFilter = tag;
+        allBadges.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+        badge.classList.add('active');
+        badge.setAttribute('aria-pressed', 'true');
+        allCards.forEach(card => {
+          card.classList.toggle('hidden', !card.dataset.tags.includes(tag));
+        });
+      }
+    });
+  });
+
+  // Install click-to-copy
+  document.querySelectorAll('.install-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      navigator.clipboard.writeText(btn.dataset.cmd).catch(() => {});
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1000);
+    });
+  });
+
+  // Card 3D tilt (desktop only) + touch hover trigger (mobile)
+  const isTouch = matchMedia('(hover: none)').matches;
+  document.querySelectorAll('.card').forEach(card => {
+    if (!isTouch) {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.transform = `translateY(-4px) perspective(800px) rotateY(${((e.clientX-r.left)/r.width-.5)*4}deg) rotateX(${-((e.clientY-r.top)/r.height-.5)*4}deg)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    }
+    // Mobile: tap triggers hover-based interactions for 3 seconds
+    card.addEventListener('touchstart', () => {
+      card.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    }, { passive: true });
+    card.addEventListener('touchend', () => {
+      setTimeout(() => card.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true })), 3000);
+    }, { passive: true });
+  });
+
+  // IconChanger shuffle
+  const ig = document.querySelector('.icon-grid');
+  if (ig) {
+    const emojis = ['🎵','📸','🗓️','⚙️','🎮','✉️','🧭','🎨','📝','🗑️','🔍','💬','📊','🖥️','🌐','🔒','🧮','🛡️','🎬','📦'];
+    let si = null;
+    ig.closest('.card').addEventListener('mouseenter', () => {
+      si = setInterval(() => {
+        const cells = ig.querySelectorAll('.app-icon');
+        const c = cells[Math.floor(Math.random()*cells.length)];
+        c.style.transform = 'scale(.4) rotate(180deg)';
+        setTimeout(() => { c.textContent = emojis[Math.floor(Math.random()*emojis.length)]; c.style.transform = 'scale(1.15)'; setTimeout(() => { c.style.transform = ''; }, 250); }, 150);
+      }, 500);
+    });
+    ig.closest('.card').addEventListener('mouseleave', () => { clearInterval(si); });
+  }
+
+  // bcmr progress
+  const bcmrCard = document.getElementById('bcmr-card');
+  if (bcmrCard) {
+    const bar = document.getElementById('bcmr-bar');
+    const statsEl = document.getElementById('bcmr-stats');
+    const steps = [{w:'78%',t:'78% · 142 MB/s · ETA 0:02'},{w:'85%',t:'85% · 148 MB/s · ETA 0:01'},{w:'93%',t:'93% · 151 MB/s · ETA 0:00'},{w:'100%',t:'100% · Done ✓'}];
+    let pi=0,pt=null;
+    bcmrCard.addEventListener('mouseenter', () => { pi=0; pt=setInterval(() => { if(pi>=steps.length)pi=0; bar.style.width=steps[pi].w; statsEl.textContent=steps[pi].t; pi++; }, 900); });
+    bcmrCard.addEventListener('mouseleave', () => { clearInterval(pt); bar.style.width='78%'; statsEl.textContent=steps[0].t; });
+  }
+
+  // pikpaktui TUI
+  const pptBody = document.getElementById('ppt-body');
+  const pptCard = document.getElementById('ppt-card');
+  if (pptBody && pptCard) {
+    const rootFiles = [{name:'Documents',info:'3 items',dir:true},{name:'Movies',info:'5 items',dir:true},{name:'photo.jpg',info:'4.2 MB'},{name:'notes.md',info:'1.1 KB'}];
+    const movieFiles = [{name:'10 Things I Hate..',info:'1.8 GB 1999'},{name:'Inception.mp4',info:'2.1 GB 2010'},{name:'Spirited Away.mkv',info:'1.5 GB 2001'},{name:'Parasite.mp4',info:'1.9 GB 2019'}];
+    function renderTUI(files,sel){let h='<div class="tui-header"><span class="tui-col-l">Files</span><span class="tui-col-r">Preview</span></div>';files.forEach((f,i)=>{h+=`<div class="tui-row${i===sel?' active':''}${f.dir?' dir':''}"><span class="tui-col-l">${i===sel?'▸ ':''}${f.name}</span><span class="tui-col-r">${i===sel?f.info:''}</span></div>`;});pptBody.innerHTML=h;}
+    let sel=0,viewing=rootFiles,pti=null;
+    renderTUI(rootFiles,-1);
+    pptCard.addEventListener('mouseenter',()=>{sel=0;viewing=rootFiles;renderTUI(viewing,sel);pti=setInterval(()=>{sel++;if(sel>=viewing.length){viewing=viewing===rootFiles?movieFiles:rootFiles;sel=0;}renderTUI(viewing,sel);},1000);});
+    pptCard.addEventListener('mouseleave',()=>{clearInterval(pti);sel=0;viewing=rootFiles;renderTUI(rootFiles,-1);});
+  }
+
+  // Caudit chart
+  const cauditCard = document.getElementById('caudit-card');
+  if (cauditCard) {
+    const bars = cauditCard.querySelectorAll('#caudit-chart i');
+    const costEl = document.getElementById('caudit-cost');
+    let ci=null;
+    cauditCard.addEventListener('mouseenter',()=>{ci=setInterval(()=>{bars.forEach(b=>{b.style.height=(4+Math.random()*22)+'px';});costEl.textContent='$'+(1+Math.random()*4).toFixed(2);},600);});
+    cauditCard.addEventListener('mouseleave',()=>{clearInterval(ci);bars.forEach(b=>{b.style.height='';});costEl.textContent='$2.47';});
+  }
+</script>
+
+</Layout>

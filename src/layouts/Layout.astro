@@ -1,0 +1,46 @@
+---
+import { GITHUB_USER, THEME } from '../data/projects';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = `Open source tools & native apps by ${GITHUB_USER}` } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content={THEME.dark} media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content={THEME.light} media="(prefers-color-scheme: light)" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content="https://app.snaix.homes/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content={`https://github.com/${GITHUB_USER}.png`} />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <link rel="canonical" href="https://app.snaix.homes/" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script is:inline>
+    (function(){
+      var s=localStorage.getItem('theme');
+      var light=s?s==='light':!window.matchMedia('(prefers-color-scheme:dark)').matches;
+      if(light)document.documentElement.classList.add('light');
+      var m=document.querySelector('meta[name="theme-color"][media*="'+( light?'light':'dark' )+'"]');
+      if(m){var n=document.createElement('meta');n.name='theme-color';n.content=m.content;document.head.appendChild(n);}
+    })();
+  </script>
+</head>
+<body>
+  <slot />
+</body>
+</html>
